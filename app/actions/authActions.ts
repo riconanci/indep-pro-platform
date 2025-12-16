@@ -49,6 +49,6 @@ export async function verifyLoginCode(emailRaw: string, codeRaw: string) {
   const user = await db.user.findUnique({ where: { email } });
   if (!user) return false;
 
-  setSession(user.id);
+  await setSession(user.id);
   return true;
 }

@@ -1,5 +1,6 @@
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -7,12 +8,13 @@ generator client {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  createdAt    DateTime      @default(now())
-  entitlement  Entitlement?
-  profile      UserProfile?
-  loginCodes   LoginCode[]
+  id          String        @id @default(cuid())
+  email       String        @unique
+  createdAt   DateTime      @default(now())
+  entitlement Entitlement?
+  profile     UserProfile?
+  loginCodes  LoginCode[]
+  usageEvents UsageEvent[]
 }
 
 model Entitlement {
@@ -45,5 +47,20 @@ model LoginCode {
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [email], references: [email], onDelete: Cascade)
+
   @@index([email])
+}
+
+model UsageEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  event     String
+  slug      String
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([event])
 }

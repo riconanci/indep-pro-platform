@@ -8,12 +8,13 @@ function hmac(input: string) {
   return crypto.createHmac("sha256", secret).update(input).digest("hex");
 }
 
-export function setSession(userId: string) {
+export async function setSession(userId: string) {
   const payload = `${userId}.${Date.now()}`;
   const sig = hmac(payload);
   const token = `${payload}.${sig}`;
 
-  cookies().set(COOKIE_NAME, token, {
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -22,12 +23,14 @@ export function setSession(userId: string) {
   });
 }
 
-export function clearSession() {
-  cookies().set(COOKIE_NAME, "", { path: "/", maxAge: 0 });
+export async function clearSession() {
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, "", { path: "/", maxAge: 0 });
 }
 
-export function getSessionUserId(): string | null {
-  const token = cookies().get(COOKIE_NAME)?.value;
+export async function getSessionUserId(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
   const parts = token.split(".");
