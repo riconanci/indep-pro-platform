@@ -102,7 +102,7 @@ function PipelineHybrid() {
   );
 }
 
-function mapDbProfileToPreview(dbProfile: MeResponse["user"] extends null ? never : any): PreviewProfile {
+function mapDbProfileToPreview(dbProfile: any): PreviewProfile {
   if (!dbProfile) return {};
   return {
     role: dbProfile.role ?? undefined,
@@ -114,6 +114,7 @@ function mapDbProfileToPreview(dbProfile: MeResponse["user"] extends null ? neve
 
 export default function IncomePipelinePage() {
   const [profile, setProfile] = useState<PreviewProfile>({});
+  const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
     // default to preview immediately
@@ -125,6 +126,12 @@ export default function IncomePipelinePage() {
         const res = await fetch("/api/me", { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as MeResponse;
+        
+        // Check unlock status
+        if (data.user?.unlocked) {
+          setUnlocked(true);
+        }
+        
         const dbp = data.user?.profile;
         if (dbp) setProfile(mapDbProfileToPreview(dbp));
       } catch {
@@ -139,8 +146,9 @@ export default function IncomePipelinePage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+    <div className="mx-auto w-full max-w-3xl px-4">
+      {/* Header - mobile responsive */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Income Pipeline</h1>
           <p className="mt-1 text-sm text-gray-700">
@@ -151,16 +159,22 @@ export default function IncomePipelinePage() {
           </p>
         </div>
 
-        <div className="flex gap-2">
-          <Link href="/onboarding/summary" className="rounded-lg border px-3 py-2 text-sm font-medium">
-            Edit answers
-          </Link>
-          <Link href="/dashboard" className="rounded-lg border px-3 py-2 text-sm font-medium">
+        {/* Buttons - stack on mobile */}
+        <div className="flex flex-wrap gap-2">
+          <Link 
+            href="/dashboard" 
+            className="rounded-lg border px-4 py-2.5 text-sm font-medium hover:bg-gray-50 active:bg-gray-100"
+          >
             Dashboard
           </Link>
-          <Link href="/unlock" className="rounded-lg bg-black px-3 py-2 text-sm font-medium text-white">
-            Unlock ($59.99)
-          </Link>
+          {!unlocked && (
+            <Link 
+              href="/unlock" 
+              className="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 active:bg-gray-900"
+            >
+              Unlock ($59.99)
+            </Link>
+          )}
         </div>
       </div>
 
@@ -170,7 +184,7 @@ export default function IncomePipelinePage() {
 
       <div className="mt-6 rounded-xl border bg-white p-4 text-sm text-gray-700">
         Key idea: <span className="font-medium">collection method ≠ ownership</span>. How money is
-        collected can change your recordkeeping, but it doesn’t automatically change your classification.
+        collected can change your recordkeeping, but it does not automatically change your classification.
       </div>
     </div>
   );

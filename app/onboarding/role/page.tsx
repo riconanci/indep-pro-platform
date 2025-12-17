@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChoiceCard } from "@/components/ui/ChoiceCard";
 import { ProgressHeader } from "@/components/ui/ProgressHeader";
 import { getPreviewProfile, setPreviewProfile } from "@/lib/previewProfile";
@@ -23,10 +24,23 @@ export default function RolePage() {
   }
 
   return (
-    <div>
+    <div className="px-4">
       <ProgressHeader step={1} total={5} />
-      <h1 className="text-xl font-semibold tracking-tight">Which best describes your work?</h1>
-      <p className="mt-2 text-sm text-gray-700">
+      
+      {/* Header with cancel - stacks on mobile */}
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="text-xl font-semibold tracking-tight">
+          Which best describes your work?
+        </h1>
+        <Link
+          href="/dashboard"
+          className="self-start rounded-lg border px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 active:bg-gray-100 sm:self-auto"
+        >
+          Cancel
+        </Link>
+      </div>
+      
+      <p className="text-sm text-gray-700">
         This only changes language and examples. Your business logic stays the same.
       </p>
 

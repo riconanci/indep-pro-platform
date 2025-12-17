@@ -47,14 +47,14 @@ function QuarterlyForm({
             value={annualNetIncome || ""}
             onChange={(e) => setAnnualNetIncome(Number(e.target.value))}
             placeholder="0"
-            className="w-full rounded-lg border py-2 pl-7 pr-3 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full rounded-lg border py-3 pl-7 pr-3 text-base focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
           />
         </div>
       </div>
 
       <button
         onClick={handleCalculate}
-        className="w-full rounded-lg bg-black py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+        className="w-full rounded-lg bg-black py-3.5 text-sm font-medium text-white transition hover:bg-gray-800 active:bg-gray-900"
       >
         Calculate quarterly estimate
       </button>
@@ -89,14 +89,14 @@ function QuarterlyPreview() {
             type="text"
             value="45,000"
             disabled
-            className="w-full rounded-lg border bg-gray-50 py-2 pl-7 pr-3 text-sm text-gray-400"
+            className="w-full rounded-lg border bg-gray-50 py-3 pl-7 pr-3 text-base text-gray-400"
           />
         </div>
       </div>
 
       <button
         disabled
-        className="w-full rounded-lg bg-gray-200 py-3 text-sm font-medium text-gray-500"
+        className="w-full rounded-lg bg-gray-200 py-3.5 text-sm font-medium text-gray-500"
       >
         Calculate quarterly estimate
       </button>
@@ -126,11 +126,11 @@ function ResultDisplay({ result }: { result: QuarterlyEstimateResult }) {
           <div className="text-sm text-gray-600">
             Estimated quarterly payment
           </div>
-          <div className="mt-1 text-3xl font-semibold text-gray-900">
+          <div className="mt-1 text-3xl font-semibold text-green-600">
             {formatCurrency(result.quarterlyPayment)}
           </div>
           <div className="mt-1 text-xs text-gray-500">
-            {result.effectiveRate}% effective rate
+            per quarter • {result.effectiveRate}% effective rate
           </div>
         </div>
       </div>
@@ -138,60 +138,53 @@ function ResultDisplay({ result }: { result: QuarterlyEstimateResult }) {
       {/* Breakdown */}
       <div className="rounded-xl border bg-white p-5">
         <h4 className="text-sm font-semibold text-gray-900">Annual breakdown</h4>
-        <div className="mt-3 space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className="mt-3 space-y-2 text-sm">
+          <div className="flex justify-between">
             <span className="text-gray-600">Net income</span>
             <span>{formatCurrency(result.annualNetIncome)}</span>
           </div>
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between">
             <span className="text-gray-600">Self-employment tax (15.3%)</span>
             <span>{formatCurrency(result.selfEmploymentTax)}</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Estimated income tax</span>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Federal income tax (est.)</span>
             <span>{formatCurrency(result.estimatedIncomeTax)}</span>
           </div>
-          <div className="flex justify-between border-t pt-2 text-sm font-medium">
-            <span>Total annual tax</span>
+          <div className="flex justify-between border-t pt-2 font-medium">
+            <span className="text-gray-900">Total annual tax</span>
             <span>{formatCurrency(result.totalAnnualTax)}</span>
           </div>
         </div>
       </div>
 
-      {/* Due dates */}
+      {/* Payment schedule */}
       <div className="rounded-xl border bg-white p-5">
-        <h4 className="text-sm font-semibold text-gray-900">
-          Payment schedule
-        </h4>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {quarterDates.map(({ q, due }) => (
+        <h4 className="text-sm font-semibold text-gray-900">Payment schedule</h4>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {quarterDates.map((qd) => (
             <div
-              key={q}
-              className="rounded-lg border bg-gray-50 px-3 py-2 text-center"
+              key={qd.q}
+              className="rounded-lg bg-gray-50 p-3 text-center"
             >
-              <div className="text-xs font-medium text-gray-500">{q}</div>
-              <div className="text-sm font-medium">
+              <div className="text-xs font-medium text-gray-500">{qd.q}</div>
+              <div className="mt-1 text-sm font-semibold">
                 {formatCurrency(result.quarterlyPayment)}
               </div>
-              <div className="text-xs text-gray-500">Due {due}</div>
+              <div className="mt-0.5 text-xs text-gray-500">{qd.due}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Important notes */}
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-        <h4 className="text-sm font-medium text-amber-800">Important notes</h4>
-        <ul className="mt-2 space-y-1 text-xs text-amber-700">
-          <li>
-            • This is a simplified estimate using 2024 federal brackets
-          </li>
-          <li>• State taxes are not included (varies by state)</li>
-          <li>
-            • Actual tax depends on deductions, credits, and filing status
-          </li>
-          <li>• Consider setting aside 25-30% of income for taxes</li>
-        </ul>
+      {/* Disclaimer */}
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+        <p className="text-xs text-amber-800">
+          <span className="font-medium">Note:</span> This estimate does not
+          include state taxes, which vary by location. California residents may
+          owe additional state income tax. Consult a tax professional for
+          accurate planning.
+        </p>
       </div>
     </div>
   );
@@ -225,7 +218,6 @@ export default function QuarterlyEstimatePage() {
   function handleCalculate(calcResult: QuarterlyEstimateResult) {
     setResult(calcResult);
 
-    // Track usage
     startTransition(() => {
       trackUsage("calculator_used", "quarterly-estimate", {
         annualNetIncome: calcResult.annualNetIncome,
@@ -236,7 +228,7 @@ export default function QuarterlyEstimatePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl px-4">
         <div className="animate-pulse">
           <div className="h-8 w-48 rounded bg-gray-200" />
           <div className="mt-4 h-96 rounded-2xl bg-gray-100" />
@@ -246,11 +238,11 @@ export default function QuarterlyEstimatePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-4">
       <div className="mb-6">
         <Link
-          href="/tools"
-          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+          href="/dashboard"
+          className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-black active:bg-gray-200"
         >
           <svg
             className="h-4 w-4"
@@ -265,7 +257,7 @@ export default function QuarterlyEstimatePage() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Back to Tools
+          Dashboard
         </Link>
       </div>
 

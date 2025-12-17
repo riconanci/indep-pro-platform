@@ -24,7 +24,7 @@ const templates: TemplateInfo[] = [
       "Track business expenses throughout the year. Categorize spending for easier tax preparation.",
     columns: ["Date", "Category", "Description", "Amount", "Payment Method"],
     purpose:
-      "Use this to record every business expense as it happens. At tax time, you'll have a clear record of deductible expenses.",
+      "Use this to record every business expense as it happens. At tax time, you will have a clear record of deductible expenses.",
   },
   {
     slug: "income-log",
@@ -110,7 +110,7 @@ function TemplateCard({
           <button
             onClick={() => onDownload(template.slug)}
             disabled={isDownloading}
-            className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 active:bg-gray-900 disabled:opacity-50"
           >
             {isDownloading ? (
               <>
@@ -206,7 +206,6 @@ export default function TemplatesPage() {
         return;
       }
 
-      // Get the blob and trigger download
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -217,7 +216,6 @@ export default function TemplatesPage() {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      // Track usage
       startTransition(() => {
         trackUsage("template_downloaded", slug);
       });
@@ -230,7 +228,7 @@ export default function TemplatesPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-3xl px-4">
         <div className="animate-pulse">
           <div className="h-8 w-48 rounded bg-gray-200" />
           <div className="mt-6 space-y-4">
@@ -243,11 +241,11 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl px-4">
       <div className="mb-6">
         <Link
-          href="/tools"
-          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+          href="/dashboard"
+          className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-black active:bg-gray-200"
         >
           <svg
             className="h-4 w-4"
@@ -262,7 +260,7 @@ export default function TemplatesPage() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Back to Tools
+          Dashboard
         </Link>
       </div>
 
@@ -293,7 +291,7 @@ export default function TemplatesPage() {
         <ul className="mt-3 space-y-2 text-sm text-gray-600">
           <li className="flex gap-2">
             <span className="text-gray-400">•</span>
-            Update your tracker weekly — don't wait until tax time
+            Update your tracker weekly — do not wait until tax time
           </li>
           <li className="flex gap-2">
             <span className="text-gray-400">•</span>

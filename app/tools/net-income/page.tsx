@@ -61,7 +61,7 @@ function NetIncomeForm({
             value={grossIncome || ""}
             onChange={(e) => setGrossIncome(Number(e.target.value))}
             placeholder="0"
-            className="w-full rounded-lg border py-2 pl-7 pr-3 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full rounded-lg border py-3 pl-7 pr-3 text-base focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
           />
         </div>
       </div>
@@ -74,10 +74,10 @@ function NetIncomeForm({
         <p className="mt-1 text-xs text-gray-500">
           Enter your estimated annual expenses for each category
         </p>
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-3">
           {expenses.map((expense, index) => (
-            <div key={expense.label} className="flex items-center gap-3">
-              <span className="w-48 shrink-0 text-sm text-gray-600">
+            <div key={expense.label} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="text-sm text-gray-600 sm:w-48 sm:shrink-0">
                 {expense.label}
               </span>
               <div className="relative flex-1">
@@ -92,7 +92,7 @@ function NetIncomeForm({
                     updateExpense(index, Number(e.target.value))
                   }
                   placeholder="0"
-                  className="w-full rounded-lg border py-2 pl-7 pr-3 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+                  className="w-full rounded-lg border py-3 pl-7 pr-3 text-base focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
             </div>
@@ -103,7 +103,7 @@ function NetIncomeForm({
       {/* Calculate button */}
       <button
         onClick={handleCalculate}
-        className="w-full rounded-lg bg-black py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+        className="w-full rounded-lg bg-black py-3.5 text-sm font-medium text-white transition hover:bg-gray-800 active:bg-gray-900"
       >
         Calculate net income
       </button>
@@ -112,7 +112,6 @@ function NetIncomeForm({
 }
 
 function NetIncomePreview() {
-  // Static preview with sample data
   const sampleExpenses = [
     { label: "Booth rent / chair rental", amount: 1200 },
     { label: "Supplies & products", amount: 300 },
@@ -135,7 +134,7 @@ function NetIncomePreview() {
             type="text"
             value="60,000"
             disabled
-            className="w-full rounded-lg border bg-gray-50 py-2 pl-7 pr-3 text-sm text-gray-500"
+            className="w-full rounded-lg border bg-gray-50 py-3 pl-7 pr-3 text-base text-gray-500"
           />
         </div>
       </div>
@@ -143,10 +142,10 @@ function NetIncomePreview() {
         <label className="block text-sm font-medium text-gray-700">
           Business expenses (annual)
         </label>
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-3">
           {sampleExpenses.map((expense) => (
-            <div key={expense.label} className="flex items-center gap-3">
-              <span className="w-48 shrink-0 text-sm text-gray-400">
+            <div key={expense.label} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="text-sm text-gray-400 sm:w-48 sm:shrink-0">
                 {expense.label}
               </span>
               <div className="relative flex-1">
@@ -157,7 +156,7 @@ function NetIncomePreview() {
                   type="text"
                   value={expense.amount.toLocaleString()}
                   disabled
-                  className="w-full rounded-lg border bg-gray-50 py-2 pl-7 pr-3 text-sm text-gray-400"
+                  className="w-full rounded-lg border bg-gray-50 py-3 pl-7 pr-3 text-base text-gray-400"
                 />
               </div>
             </div>
@@ -166,7 +165,7 @@ function NetIncomePreview() {
       </div>
       <button
         disabled
-        className="w-full rounded-lg bg-gray-200 py-3 text-sm font-medium text-gray-500"
+        className="w-full rounded-lg bg-gray-200 py-3.5 text-sm font-medium text-gray-500"
       >
         Calculate net income
       </button>
@@ -204,7 +203,6 @@ function ResultDisplay({ result }: { result: NetIncomeResult }) {
         </div>
       </div>
 
-      {/* Expense breakdown */}
       {result.expenses.filter((e) => e.amount > 0).length > 0 && (
         <div className="mt-5 border-t pt-4">
           <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -258,7 +256,6 @@ export default function NetIncomePage() {
   function handleCalculate(calcResult: NetIncomeResult) {
     setResult(calcResult);
 
-    // Track usage
     startTransition(() => {
       trackUsage("calculator_used", "net-income", {
         grossIncome: calcResult.grossIncome,
@@ -269,7 +266,7 @@ export default function NetIncomePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl px-4">
         <div className="animate-pulse">
           <div className="h-8 w-48 rounded bg-gray-200" />
           <div className="mt-4 h-96 rounded-2xl bg-gray-100" />
@@ -279,11 +276,11 @@ export default function NetIncomePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl px-4">
       <div className="mb-6">
         <Link
-          href="/tools"
-          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-black"
+          href="/dashboard"
+          className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-black active:bg-gray-200"
         >
           <svg
             className="h-4 w-4"
@@ -298,7 +295,7 @@ export default function NetIncomePage() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Back to Tools
+          Dashboard
         </Link>
       </div>
 
