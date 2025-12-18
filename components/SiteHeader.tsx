@@ -5,14 +5,26 @@ export function SiteHeader() {
     <header className="border-b bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link href="/" className="font-semibold tracking-tight">
-          Independent Pro Platform
+          Independent Pro
         </Link>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/start" className="hover:underline">
-            Start
+        <nav className="flex items-center gap-1 text-sm sm:gap-4">
+          <Link 
+            href="/learn" 
+            className="rounded-lg px-2 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-black sm:px-3"
+          >
+            Learn
           </Link>
-          <Link href="/tools/income-pipeline" className="hover:underline">
-            Income Pipeline
+          <Link 
+            href="/tools" 
+            className="rounded-lg px-2 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-black sm:px-3"
+          >
+            Tools
+          </Link>
+          <Link 
+            href="/dashboard" 
+            className="rounded-lg px-2 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-black sm:px-3"
+          >
+            Dashboard
           </Link>
         </nav>
       </div>
